@@ -8,9 +8,10 @@
     <artifactId>hello-mapred</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
-        <java.version>1.7</java.version>
+        <java.version>1.6</java.version>
         <scala.version>2.11</scala.version>
         <spark.version>1.3.1</spark.version>
+<!--        <plumbum.version>0.1.0-SNAPSHOT</plumbum.version>-->
 <!--        <avro.version>1.7.6</avro.version>
         <cascading.version>2.5.5</cascading.version>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,6 +24,34 @@
     </repositories>
     <dependencies>
 <!--        <dependency>
+            <groupId>com.ebay.hadoop</groupId>
+            <artifactId>plumbum</artifactId>
+            <version>${plumbum.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro-mapred</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>cascading-hive</artifactId>
+                    <groupId>com.ebay</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>-->
+<!--        <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>${avro.version}</version>
@@ -31,8 +60,8 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-core</artifactId>
             <version>1.2.1</version>
-            <scope>provided</scope>
-            <type>jar</type>
+<!--            <scope>provided</scope>
+            <type>jar</type>-->
         </dependency>
         <dependency>
             <groupId>local.repo</groupId>
@@ -45,6 +74,21 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.version}</artifactId>
             <version>${spark.version}</version>
+        </dependency>
+<!--        <dependency>
+            <groupId>de.undercouch</groupId>
+            <artifactId>bson4jackson</artifactId>
+            <version>2.5.0</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
         </dependency>
     </dependencies>
     <build>
