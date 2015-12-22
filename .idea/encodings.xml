@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/data/raw/raw_data.dat" charset="GBK" />
     <file url="file://$PROJECT_DIR$/data/test/one_record.dat" charset="GBK" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

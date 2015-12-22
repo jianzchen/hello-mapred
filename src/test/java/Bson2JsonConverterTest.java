@@ -1,5 +1,7 @@
+/*
 import java.io.*;
 
+*/
 /*import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -7,7 +9,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.undercouch.bson4jackson.BsonFactory;
-import de.undercouch.bson4jackson.BsonParser;*/
+import de.undercouch.bson4jackson.BsonParser;*//*
+
 
 import com.mongodb.util.JSON;
 import operation.JBUtils;
@@ -20,9 +23,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+*/
 /**
  * Created by jianzchen on 2015/9/7.
- */
+ *//*
+
 public class Bson2JsonConverterTest {
     public static void main(String[] args) throws Exception{
         String record = null;
@@ -40,6 +45,7 @@ public class Bson2JsonConverterTest {
         String bsonString = record.split("\u0007",8)[7].substring(4);
         //System.out.println(bson.length());
 
+*/
 /*        //create factory
         BsonFactory factory = new BsonFactory();
 
@@ -52,7 +58,8 @@ public class Bson2JsonConverterTest {
         BsonParser parser = factory.createParser(bais);
         while (parser.nextToken() != JsonToken.END_OBJECT) {
             System.out.println(parser.getCurrentName() + " : " + parser.getText());
-        }*/
+        }*//*
+
         //BsonDocument bsonDoc = new RawBsonDocument(bson.getBytes());
         //BsonDocumentReader bsonReader = new BsonDocumentReader(bsonDoc);
         //bsonReader.
@@ -82,10 +89,13 @@ public class Bson2JsonConverterTest {
     }
 
 
+*/
 /*    public String json2bson(String json) {
         String bson;
 
 
         return bson;
-    }*/
+    }*//*
+
 }
+*/

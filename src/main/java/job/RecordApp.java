@@ -1,9 +1,6 @@
-/*
 package job;
 
-//import com.ebay.hadoop.platform.common.OptionsHelper;
-import common.MyInputFormat;
-import operation.Bson2JsonConverter;
+import common.MyRecordObject;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -14,63 +11,31 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.bson.*;
-import org.bson.codecs.BsonDocumentCodec;
-import org.bson.types.ObjectId;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Iterator;
 
-*/
 /**
- * Description: Transform the last field which is in BSON format to JSON format
- * Author: Johnson CHEN
- * Date: 2015/8/27.
- *//*
-
-public class Bson2Json extends Configured implements Tool {
-
-*/
-/*    protected static final Option INPUT = OptionBuilder.hasArg().isRequired(true).create("in");
-    protected static final Option OUTPUT = OptionBuilder.hasArg().isRequired(true).create("out");
-    //protected static final Option PROCESSDATE = OptionBuilder.hasArg().isRequired(true).create("process_date");
-    protected static final Option REDUCETASK = OptionBuilder.hasArg().isRequired(true).create("reduce_task");
-
-    private Options options = new Options();*//*
-
-    //private OptionsHelper optionsHelper = new OptionsHelper();
-
-    public static void main(String[] args) throws Exception {
-        int ret = ToolRunner.run(new Bson2Json(), args);
+ * Created by cjz20 on 2015/12/21.
+ */
+public class RecordApp extends Configured implements Tool {
+    public static void main(String args[]) throws Exception {
+        int ret = ToolRunner.run(new RecordApp(), args);
         System.exit(ret);
     }
 
     @Override
     public int run(String[] args) throws Exception {
-*/
-/*        try {
-            this.options.addOption(this.INPUT);
-            this.options.addOption(this.OUTPUT);
-            //this.options.addOption(this.PROCESSDATE);
-            this.options.addOption(this.REDUCETASK);
-            //this.optionsHelper.parseOptions(this.options, args);
-        } catch (Exception exception) {
-            //this.optionsHelper.printUsage(getClass().getSimpleName(), this.options);
-            exception.printStackTrace();
-            return -1;
-        }*//*
-
-
         try {
             String inputPath = args[0];
             String outputPath = args[1];
-            String reduceTask = "1";
-            if (args[2] != null) { reduceTask = args[2];}
+            //String processDate = PROCESSDATE.getValue();
+            String reduceTask = args[2];
 
             Configuration configuration = new Configuration(getConf());
             //configuration.set("mapred.compress.map.output", "true");
@@ -80,10 +45,10 @@ public class Bson2Json extends Configured implements Tool {
             }
             //configuration.set("processDate", processDate + "99");
 
-            Job job = new Job(configuration, "TRANSFORM BSON TO JSON");
+            Job job = new Job(configuration, "RecordApp");
             job.setNumReduceTasks(Integer.parseInt(reduceTask));
 
-            job.setJarByClass(Bson2Json.class);
+            job.setJarByClass(Dedup.class);
             job.setMapperClass(Map.class);
             job.setReducerClass(Reduce.class);
             //job.setCombinerClass(Reduce.class);
@@ -93,8 +58,8 @@ public class Bson2Json extends Configured implements Tool {
             job.setOutputKeyClass(Text.class);
             job.setOutputValueClass(Text.class);
 
-            job.setInputFormatClass(MyInputFormat.class);
-            job.setOutputFormatClass(TextOutputFormat.class);
+            job.setInputFormatClass(TextInputFormat.class);
+            job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
             FileInputFormat.addInputPath(job, new Path(inputPath));
             FileOutputFormat.setOutputPath(job, new Path(outputPath));
@@ -116,15 +81,15 @@ public class Bson2Json extends Configured implements Tool {
     }
 
     public static class Map extends Mapper<LongWritable, Text, Text, Text> {
-        private String[] split;
+        private MyRecordObject myRecordObject;
 
 
         @Override
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             //String processDate = context.getConfiguration().get("processDate");
             try {
-                split = value.toString().split("\007", 2);
-                context.write(new Text(split[0]), value);
+                myRecordObject = new MyRecordObject(value.toString());
+                context.write(new Text(myRecordObject.getId().toString()), value);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -132,52 +97,34 @@ public class Bson2Json extends Configured implements Tool {
     }
 
     public static class Reduce extends Reducer<Text, Text, Text, Text> {
+        Text outValue = new Text();
         private Iterator<Text> iterator;
-        Text outValue;
-        Text rawData;
-        String[] columns;
-        String json;
-        */
-/*String outDate = "";
+
+        /*String outDate = "";
         Text tmpValue;
         String[] valueSplit;
         String tmpDate;
-*//*
-
+*/
         @Override
         public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 
             iterator = values.iterator();
 
             while (iterator.hasNext()) {
-*/
 /*                tmpValue = iterator.next();
                 valueSplit = tmpValue.toString().split("\177");
                 tmpDate = valueSplit[valueSplit.length - 1];
                 if (tmpDate.compareTo(outDate) > 0) {
-                    outValue = tmpValue;*//*
-
-                rawData = iterator.next();
+                    outValue = tmpValue;*/
+                outValue = iterator.next();
             }
 
-
-            columns = rawData.toString().split("\u0007",8);
-            json = bson2json(columns[7].substring(4).concat("\u0000\u0000\u0000\u0000"));
-            outValue = new Text(columns[0] + "\u0007" + columns[1] + "\u0007" + columns[2] + "\u0007" + columns[3] + "\u0007" + columns[4] + "\u0007" + columns[5] + "\u0007" + columns[6] + "\u0007" + json);
-
             try {
-                context.write(null, new Text(outValue));
+                context.write(new Text(), new Text(outValue));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        private String bson2json(String bson) {
-            String json;
-            //BsonBinaryReader bsonBinaryReader = new BsonBinaryReader();
-            //json = bsonReader.readBinaryData(bson).asDocument().toJson();
-            //json = new BsonDocumentCodec().decode().toJson();
-            return "test json";
-        }
     }
-}*/
+}
+

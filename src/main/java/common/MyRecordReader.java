@@ -1,3 +1,4 @@
+/*
 package common;
 
 import org.apache.commons.logging.Log;
@@ -20,9 +21,11 @@ import org.apache.hadoop.util.LineReader;
 import java.io.IOException;
 import java.io.InputStream;
 
+*/
 /**
  * Created by jianzchen on 2015/8/27.
- */
+ *//*
+
 public class MyRecordReader extends RecordReader<LongWritable,Text> {
 
     private static final Log LOG = LogFactory.getLog(MyRecordReader.class);
@@ -198,4 +201,4 @@ public class MyRecordReader extends RecordReader<LongWritable,Text> {
         }
     }
 
-}
+}*/
