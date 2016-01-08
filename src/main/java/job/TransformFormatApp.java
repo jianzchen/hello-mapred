@@ -24,8 +24,17 @@ import parquet.example.data.Group;
 import parquet.hadoop.example.ExampleInputFormat;
 */
 
+import org.apache.parquet.column.ParquetProperties;
+import org.apache.parquet.example.data.Group;
+import org.apache.parquet.example.data.GroupFactory;
+import org.apache.parquet.example.data.simple.SimpleGroupFactory;
 import org.apache.parquet.hadoop.ParquetOutputFormat;
-
+import org.apache.parquet.hadoop.ParquetWriter;
+import org.apache.parquet.hadoop.api.WriteSupport;
+import org.apache.parquet.hadoop.example.GroupWriteSupport;
+import org.apache.parquet.hadoop.metadata.CompressionCodecName;
+import org.apache.parquet.schema.MessageType;
+import org.apache.parquet.schema.MessageTypeParser;
 
 /**
  * Created by chenjianzhou622 on 2016/1/8.
@@ -75,29 +84,49 @@ public class TransformFormatApp extends Configured implements Tool {
             job.setOutputValueClass(Text.class);
 
             job.setInputFormatClass(TextInputFormat.class);
+            FileInputFormat.addInputPath(job, new Path(inputPath));
+
             job.setOutputFormatClass(ParquetOutputFormat.class);
 
+            FileSystem fileSystem = FileSystem.get(configuration);
+            if (fileSystem.exists(new Path("data/out"))) {
+                fileSystem.delete(new Path("data/out"), true);
+            }
+
             String writeSchema = "message example {\n" +
-                    "required int32 x;\n" +
-                    "required binary y;\n" +
-                    "required binary z\n" +
+                    "required binary x (UTF8);\n" +
+                    "required binary y (UTF8);\n" +
+                    "required binary z (UTF8);\n" +
                     "}";
-            ParquetOutputFormat.setWriteSupportClass(
-                    job,writeSchema.getClass()
+            MessageType schema = MessageTypeParser.parseMessageType(writeSchema);
+            GroupWriteSupport writeSupport = new GroupWriteSupport();
+            GroupWriteSupport.setSchema(schema, configuration);
+            GroupFactory groupFactory = new SimpleGroupFactory(schema);
+            Group group = groupFactory.newGroup()
+                    .append("x", "X")
+                    .append("y", "Y")
+                    .append("z","Z");
+            ParquetWriter<Group> writer = new ParquetWriter<Group>(new Path(outputPath), writeSupport,
+                    ParquetWriter.DEFAULT_COMPRESSION_CODEC_NAME,
+                    ParquetWriter.DEFAULT_BLOCK_SIZE,
+                    ParquetWriter.DEFAULT_PAGE_SIZE,
+                    ParquetWriter.DEFAULT_PAGE_SIZE, /* dictionary page size */
+                    ParquetWriter.DEFAULT_IS_DICTIONARY_ENABLED,
+                    ParquetWriter.DEFAULT_IS_VALIDATING_ENABLED,
+                    ParquetProperties.WriterVersion.PARQUET_1_0, configuration);
+            writer.write(group);
+            writer.close();
+/*            ParquetOutputFormat.setWriteSupportClass(
+                    job,
+                    MessageTypeParser.parseMessageType(writeSchema).getClass()
                     );
+            ParquetOutputFormat.setCompression(job, CompressionCodecName.SNAPPY);
 
-            job.submit();
-
-            FileInputFormat.addInputPath(job, new Path(inputPath));
-            FileOutputFormat.setOutputPath(job, new Path(outputPath));
+            FileOutputFormat.setOutputPath(job, new Path(outputPath));*/
 
             //FileOutputFormat.setCompressOutput(job, true);
             //FileOutputFormat.setOutputCompressorClass(job, org.apache.hadoop.io.compress.BZip2Codec.class);
 
-            FileSystem fileSystem = FileSystem.get(configuration);
-            if (fileSystem.exists(new Path(outputPath))) {
-                fileSystem.delete(new Path(outputPath), true);
-            }
 
             job.waitForCompletion(true);
         } catch (Exception exception) {
