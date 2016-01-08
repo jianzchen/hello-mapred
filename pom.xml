@@ -8,9 +8,9 @@
     <artifactId>hello-mapred</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
-        <java.version>1.6</java.version>
-        <scala.version>2.11</scala.version>
-        <spark.version>1.3.1</spark.version>
+        <java.version>1.7</java.version>
+        <!--<scala.version>2.11</scala.version>
+        <spark.version>1.3.1</spark.version>-->
 <!--        <plumbum.version>0.1.0-SNAPSHOT</plumbum.version>-->
 <!--        <avro.version>1.7.6</avro.version>
         <cascading.version>2.5.5</cascading.version>-->
@@ -23,6 +23,27 @@
         </repository>
     </repositories>
     <dependencies>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-common</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-encoding</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-column</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hadoop</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+
 <!--        <dependency>
             <groupId>com.ebay.hadoop</groupId>
             <artifactId>plumbum</artifactId>
@@ -70,17 +91,17 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/patch/patch-hadoop_7682-1.0.x-win.jar</systemPath>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.version}</artifactId>
             <version>${spark.version}</version>
-        </dependency>
+        </dependency>-->
 <!--        <dependency>
             <groupId>de.undercouch</groupId>
             <artifactId>bson4jackson</artifactId>
             <version>2.5.0</version>
         </dependency>-->
-        <dependency>
+<!--        <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>3.0.3</version>
@@ -89,7 +110,7 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>
